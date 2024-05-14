@@ -29,6 +29,9 @@ class TaskViewModel @Inject constructor(
     private var _tasks = MutableStateFlow(listOf<Task>())
     var tasks: StateFlow<List<Task>> = _tasks.asStateFlow()
 
+    private var _filteredTasks = MutableStateFlow(listOf<Task>())
+    var filteredTasks: StateFlow<List<Task>> = _filteredTasks.asStateFlow()
+
     private val _openAddTaskDialog = mutableStateOf(false)
     var openAddTaskDialog: State<Boolean> = _openAddTaskDialog
 
@@ -37,6 +40,9 @@ class TaskViewModel @Inject constructor(
 
     private val _toastText = mutableStateOf("")
     var toastText: State<String> = _toastText
+
+    private val _searchField = mutableStateOf("")
+    var searchField: State<String> = _searchField
 
     private var _newTask = MutableStateFlow(Task(taskName = "", taskDescription = ""))
     var newTask: StateFlow<Task> = _newTask.asStateFlow()
@@ -48,8 +54,21 @@ class TaskViewModel @Inject constructor(
     private fun getAllTasks() = viewModelScope.launch {
         getAllTasksUseCase.invoke().collectLatest {
             _tasks.value = it
+            filterTasks()
         }
     }
+
+    private fun filterTasks() {
+        if (_searchField.value == "") {
+            _filteredTasks.value = _tasks.value
+        }
+        else {
+            _filteredTasks.value = _tasks.value.filter {
+                it.taskName.contains(_searchField.value, ignoreCase = true)
+            }
+        }
+    }
+
 
     fun changeAddTaskDialogState(state: Boolean) {
         _openAddTaskDialog.value = state
@@ -118,5 +137,10 @@ class TaskViewModel @Inject constructor(
 
     fun changeToastShown() {
         _isToastShown.value = false
+    }
+
+    fun changeSearchField(value: String) {
+        _searchField.value = value
+        filterTasks()
     }
 }
