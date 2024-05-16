@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class TasksRepositoryImpl @Inject constructor(private val dao: TestsDao): TasksRepository {
-    override fun getAllTasksUseCase(): Flow<List<Task>> {
+    override fun getAllTasks(): Flow<List<Task>> {
         return dao.getTasks()
     }
 

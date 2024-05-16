@@ -7,5 +7,5 @@ class GetAllTasksUseCase @Inject constructor(
     private val taskRepository: TasksRepository
 ) {
 
-    operator fun invoke() = taskRepository.getAllTasksUseCase()
+    operator fun invoke() = taskRepository.getAllTasks()
 }

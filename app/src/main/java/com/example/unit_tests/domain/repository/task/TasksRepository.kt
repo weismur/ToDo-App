@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface TasksRepository {
 
-    fun getAllTasksUseCase(): Flow<List<Task>>
+    fun getAllTasks(): Flow<List<Task>>
 
     suspend fun addNewTask(task: Task)
 

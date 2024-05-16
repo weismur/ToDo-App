@@ -45,7 +45,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.unit_tests.R
+import com.example.unit_tests.presentation.modalDialog.AddGroupDialog
 import com.example.unit_tests.presentation.modalDialog.AddTaskDialog
+import com.example.unit_tests.presentation.modalDialog.ChooseAddDialog
+import com.example.unit_tests.presentation.modalDialog.GroupsDialog
+import com.example.unit_tests.presentation.modalDialog.findGroupName
 import es.dmoral.toasty.Toasty
 
 
@@ -53,12 +57,32 @@ import es.dmoral.toasty.Toasty
 fun TaskList() {
 
     val taskViewModel: TaskViewModel = hiltViewModel()
+
     val filteredTasks = taskViewModel.filteredTasks.collectAsState()
     val openAddTaskDialog = taskViewModel.openAddTaskDialog
+    val openAddGroupDilog = taskViewModel.openAddGroupDialog
+    val openChooseDialog = taskViewModel.openChooseDialog
     val newTask = taskViewModel.newTask.collectAsState()
     val isToastShown = taskViewModel.isToastShown
     val toastText = taskViewModel.toastText
     val searchField = taskViewModel.searchField
+    val newGroup = taskViewModel.newGroup.collectAsState()
+    val groups = taskViewModel.groups.collectAsState()
+    val groupsDialog = taskViewModel.groupsDialog
+
+    if (openChooseDialog.value) {
+        ChooseAddDialog(
+            openGroupDialog = {
+                taskViewModel.changeAddGroupDialogState(true)
+                taskViewModel.changeOpenChooseDialog(false)
+            },
+            openTaskDialog = {
+                taskViewModel.changeAddTaskDialogState(true)
+                taskViewModel.changeOpenChooseDialog(false)
+            },
+            onExit = { taskViewModel.changeOpenChooseDialog(false) }
+        )
+    }
 
     if (openAddTaskDialog.value) {
         AddTaskDialog(
@@ -66,7 +90,32 @@ fun TaskList() {
             onChangeTaskName = { taskViewModel.changeTaskName(it) },
             onChangeTaskDescription = { taskViewModel.changeTaskDescription(it) },
             addNewTask = { taskViewModel.addNewTask() },
-            onExit = { taskViewModel.clearTask() })
+            onExit = { taskViewModel.clearTask() },
+            groups = groups.value,
+            openGroupDialog = {
+                taskViewModel.changeGroupsDialog(true)
+            }
+        )
+    }
+
+    if (openAddGroupDilog.value) {
+        AddGroupDialog(
+            group = newGroup.value,
+            onChangeGroupName = { taskViewModel.changeGroupName(it) },
+            addNewGroup = { taskViewModel.addNewGroup() },
+            onExit = { taskViewModel.clearGroup() })
+    }
+
+    if(groupsDialog.value) {
+        GroupsDialog(
+            groups = groups.value,
+            onExit = {
+                taskViewModel.changeGroupsDialog(false)
+            },
+            changeSelectedGroup = {
+                taskViewModel.changeSelectedGroup(it)
+            }
+        )
     }
 
     if (isToastShown.value) {
@@ -78,7 +127,7 @@ fun TaskList() {
         Text(text = "ToDo App", modifier = Modifier.padding(20.dp))
     }, floatingActionButton = {
         FloatingActionButton(
-            onClick = { taskViewModel.changeAddTaskDialogState(true) },
+            onClick = { taskViewModel.changeOpenChooseDialog(true) },
             containerColor = Color(0xFF9395D3)
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = Color.White)
@@ -129,6 +178,7 @@ fun TaskList() {
                                 color = Color(0xFF000000),
                                 fontSize = 14.sp
                             )
+                            Text(text = "Группа: " + findGroupName(groups.value, it), color = Color(0xFF9395D3), fontSize = 14.sp)
                         }
                         Row {
                             IconButton(onClick = {
