@@ -142,7 +142,7 @@ class TaskViewModel @Inject constructor(
             addNewTaskUseCase.invoke(_newTask.value)
             _openAddTaskDialog.value = false
             _newTask.update {
-                it.copy(idTask = 0, taskName = "", taskDescription = "", taskStatus = 0)
+                it.copy(idTask = 0, taskName = "", taskDescription = "", taskStatus = 0, groupNumber = null)
             }
         }
     }
@@ -184,7 +184,7 @@ class TaskViewModel @Inject constructor(
 
     fun clearTask() {
         _newTask.update {
-            it.copy(idTask = 0, taskName = "", taskDescription = "", taskStatus = 0)
+            it.copy(idTask = 0, taskName = "", taskDescription = "", taskStatus = 0, groupNumber = null)
         }
         _openAddTaskDialog.value = false
     }
