@@ -2,7 +2,7 @@ package com.example.unit_tests.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.unit_tests.data.database.TestsDatabase
+import com.example.unit_tests.data.database.TasksDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,12 +20,12 @@ object AppModule {
         @ApplicationContext app: Context
     ) = Room.databaseBuilder(
         app,
-        TestsDatabase::class.java,
+        TasksDatabase::class.java,
         "pnc"
     ).build()
 
     @Singleton
     @Provides
-    fun provideDao(db: TestsDatabase) = db.testsDao()
+    fun provideDao(db: TasksDatabase) = db.testsDao()
 }
 

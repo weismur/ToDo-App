@@ -13,7 +13,7 @@ import com.example.unit_tests.data.database.entity.task.Task
     version = 1,
     exportSchema = true
 )
-abstract class TestsDatabase : RoomDatabase() {
-    abstract fun testsDao(): TestsDao
+abstract class TasksDatabase : RoomDatabase() {
+    abstract fun testsDao(): TasksDao
 
 }

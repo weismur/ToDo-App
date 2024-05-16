@@ -11,7 +11,7 @@ import com.example.unit_tests.data.database.entity.task.Task
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface TestsDao {
+interface TasksDao {
     @Query("SELECT * FROM Task")
     fun getTasks(): Flow<List<Task>>
 
